@@ -56,3 +56,20 @@ Copy `.env.example` values into your shell or a local env file before production
 - Run `make security` for static analysis, dependency audit, and Django deploy checks
 - Production should set a unique `DJANGO_SECRET_KEY` and turn secure cookie/SSL flags on
 - Security workflow runs Bandit, `pip-audit`, and Django `check --deploy`
+
+## Deploy
+
+- Production runtime uses Gunicorn + WhiteNoise
+- `DATABASE_URL` is supported for hosted PostgreSQL or other Django-compatible databases
+- Build a container locally with `make docker-build`
+- Start a production-style server locally with `make run-prod`
+
+```bash
+docker build -t django-api:latest .
+docker run --rm -p 8000:8000 \
+  -e DJANGO_SECRET_KEY=change-me \
+  -e DJANGO_DEBUG=False \
+  -e DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1 \
+  -e DATABASE_URL=sqlite:///db.sqlite3 \
+  django-api:latest
+```

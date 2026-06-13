@@ -1,4 +1,4 @@
-.PHONY: setup dev migrate lint format test check pre-commit ci security
+.PHONY: setup dev migrate lint format test check pre-commit ci security collectstatic run-prod docker-build
 
 setup:
 	python3 -m venv .venv
@@ -9,6 +9,9 @@ dev:
 
 migrate:
 	. .venv/bin/activate && python manage.py migrate
+
+collectstatic:
+	. .venv/bin/activate && python manage.py collectstatic --noinput
 
 lint:
 	. .venv/bin/activate && ruff check .
@@ -45,3 +48,9 @@ security:
 		DJANGO_SESSION_COOKIE_SECURE=True \
 		DJANGO_CSRF_COOKIE_SECURE=True \
 		python manage.py check --deploy --fail-level WARNING
+
+run-prod:
+	. .venv/bin/activate && gunicorn django_api.wsgi:application --bind 0.0.0.0:8000
+
+docker-build:
+	docker build -t django-api:latest .
