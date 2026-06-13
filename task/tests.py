@@ -76,3 +76,31 @@ class TaskApiTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("error", response.json())
+
+    def test_create_task_requires_boolean_is_completed(self):
+        response = self.client.post(
+            self.list_url,
+            data=json.dumps({"title": "Bad bool", "is_completed": "yes"}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["error"],
+            "The 'is_completed' field must be a boolean.",
+        )
+
+    def test_update_task_requires_string_description(self):
+        task = Task.objects.create(title="Keep type safety")
+
+        response = self.client.patch(
+            reverse("task-detail", args=[task.id]),
+            data=json.dumps({"description": 123}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["error"],
+            "The 'description' field must be a string.",
+        )

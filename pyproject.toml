@@ -1,6 +1,7 @@
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "django_api.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = "--cov=. --cov-report=term-missing --cov-report=xml --cov-fail-under=85"
 
 [tool.ruff]
 line-length = 88
@@ -8,3 +9,12 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+
+[tool.coverage.run]
+omit = [
+    "manage.py",
+    "django_api/asgi.py",
+    "django_api/wsgi.py",
+    "*/migrations/*",
+    "*/tests.py",
+]

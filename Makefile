@@ -1,4 +1,4 @@
-.PHONY: setup dev migrate lint format test check pre-commit
+.PHONY: setup dev migrate lint format test check pre-commit ci
 
 setup:
 	python3 -m venv .venv
@@ -24,3 +24,8 @@ check:
 
 pre-commit:
 	. .venv/bin/activate && pre-commit run --all-files
+
+ci:
+	. .venv/bin/activate && ruff check .
+	. .venv/bin/activate && pytest
+	. .venv/bin/activate && python manage.py check
