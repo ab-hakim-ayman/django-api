@@ -1,4 +1,4 @@
-.PHONY: setup dev migrate lint format test check pre-commit ci security collectstatic run-prod docker-build
+.PHONY: setup dev migrate lint format test check pre-commit ci security collectstatic run-prod docker-build release-check
 
 setup:
 	python3 -m venv .venv
@@ -54,3 +54,7 @@ run-prod:
 
 docker-build:
 	docker build -t django-api:latest .
+
+release-check:
+	$(MAKE) ci
+	$(MAKE) security

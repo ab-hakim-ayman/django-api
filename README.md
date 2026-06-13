@@ -18,6 +18,7 @@ python manage.py runserver
 
 - Main stable branch: `main`
 - Active development branch: `dev`
+- Feature branches: `feature/<name>`
 - Install hooks: `. .venv/bin/activate && pre-commit install`
 
 ## Quality Commands
@@ -80,3 +81,11 @@ docker run --rm -p 8000:8000 \
 - `GET /health/ready/` checks database connectivity for readiness
 - Logs are emitted in structured JSON format to stdout
 - Docker image includes an HTTP healthcheck against the readiness endpoint
+
+## Release Flow
+
+- Open feature work from `feature/*` into `dev`
+- Merged `feature/*` branches are auto-cleaned up after merge into `dev`
+- Pushes to `dev` automatically create or update a release PR into `main`
+- Merges into `main` trigger the deploy container workflow
+- Run `make release-check` before promoting a risky change

@@ -1,0 +1,62 @@
+name: Release PR
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  promote-dev-to-main:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Prepare release branch
+        id: release_branch
+        run: |
+          git fetch origin main dev
+          if git diff --quiet origin/main..origin/dev; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git checkout -B release/dev-to-main origin/dev
+          git push --force-with-lease origin release/dev-to-main
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update release PR
+        if: steps.release_branch.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing_pr="$(gh pr list \
+            --base main \
+            --head release/dev-to-main \
+            --state open \
+            --json number \
+            --jq '.[0].number')"
+
+          if [ -n "$existing_pr" ]; then
+            gh pr edit "$existing_pr" \
+              --title "Release: promote dev to main" \
+              --body "$(cat .github/release_pr_body.md)"
+          else
+            gh pr create \
+              --base main \
+              --head release/dev-to-main \
+              --title "Release: promote dev to main" \
+              --body "$(cat .github/release_pr_body.md)"
+          fi
