@@ -73,3 +73,10 @@ docker run --rm -p 8000:8000 \
   -e DATABASE_URL=sqlite:///db.sqlite3 \
   django-api:latest
 ```
+
+## Monitoring
+
+- `GET /health/live/` returns app liveness and uptime info
+- `GET /health/ready/` checks database connectivity for readiness
+- Logs are emitted in structured JSON format to stdout
+- Docker image includes an HTTP healthcheck against the readiness endpoint
