@@ -7,7 +7,27 @@ Basic Django API project scaffold.
 ```bash
 python3 -m venv .venv
 . .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 python manage.py migrate
 python manage.py runserver
 ```
+
+## Development Workflow
+
+- Main stable branch: `main`
+- Active development branch: `dev`
+- Install hooks: `. .venv/bin/activate && pre-commit install`
+
+## Quality Commands
+
+```bash
+make check
+make lint
+make format
+make test
+make pre-commit
+```
+
+## Environment Variables
+
+Copy `.env.example` values into your shell or a local env file before production-grade setup.
