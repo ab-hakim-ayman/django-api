@@ -5,6 +5,9 @@ db.sqlite3
 .DS_Store
 .env
 .env.*
+!.env.example
 *.log
 staticfiles/
 media/
+.coverage
+coverage.xml
