@@ -50,3 +50,9 @@ Copy `.env.example` values into your shell or a local env file before production
 - Pull requests to `dev` and `main` run automated CI
 - CI checks: Ruff, pytest, coverage threshold, Django system check
 - Coverage report is exported as `coverage.xml`
+
+## DevSecOps
+
+- Run `make security` for static analysis, dependency audit, and Django deploy checks
+- Production should set a unique `DJANGO_SECRET_KEY` and turn secure cookie/SSL flags on
+- Security workflow runs Bandit, `pip-audit`, and Django `check --deploy`

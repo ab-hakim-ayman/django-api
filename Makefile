@@ -1,4 +1,4 @@
-.PHONY: setup dev migrate lint format test check pre-commit ci
+.PHONY: setup dev migrate lint format test check pre-commit ci security
 
 setup:
 	python3 -m venv .venv
@@ -29,3 +29,19 @@ ci:
 	. .venv/bin/activate && ruff check .
 	. .venv/bin/activate && pytest
 	. .venv/bin/activate && python manage.py check
+
+security:
+	. .venv/bin/activate && bandit -r . -c pyproject.toml
+	. .venv/bin/activate && pip-audit -r requirements.txt
+	. .venv/bin/activate && env \
+		DJANGO_SECRET_KEY=production-like-local-secret-key-with-strong-entropy-123456 \
+		DJANGO_DEBUG=False \
+		DJANGO_ALLOWED_HOSTS=api.example.com \
+		DJANGO_CSRF_TRUSTED_ORIGINS=https://api.example.com \
+		DJANGO_SECURE_HSTS_SECONDS=3600 \
+		DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS=True \
+		DJANGO_SECURE_HSTS_PRELOAD=True \
+		DJANGO_SECURE_SSL_REDIRECT=True \
+		DJANGO_SESSION_COOKIE_SECURE=True \
+		DJANGO_CSRF_COOKIE_SECURE=True \
+		python manage.py check --deploy --fail-level WARNING
