@@ -31,3 +31,11 @@ make pre-commit
 ## Environment Variables
 
 Copy `.env.example` values into your shell or a local env file before production-grade setup.
+
+## Task API
+
+- `GET /api/tasks/` list tasks
+- `POST /api/tasks/` create task
+- `GET /api/tasks/<id>/` retrieve task
+- `PUT/PATCH /api/tasks/<id>/` update task
+- `DELETE /api/tasks/<id>/` delete task
